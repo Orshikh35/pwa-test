@@ -1,14 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 
-type BeforeInstallPromptEvent = Event & {
-  prompt: () => void;
-  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
-};
-
 export default function Home() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (event: Event) => {
@@ -22,13 +18,13 @@ export default function Home() {
       }
     };
 
-    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt as EventListener);
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
     window.addEventListener("appinstalled", checkInstallation);
 
     checkInstallation();
 
     return () => {
-      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt as EventListener);
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
       window.removeEventListener("appinstalled", checkInstallation);
     };
   }, []);
@@ -46,17 +42,42 @@ export default function Home() {
   };
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen">
-      <h1 className="text-2xl font-bold mb-4">Next.js PWA App</h1>
+    <main className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <h1 className="text-2xl font-bold mb-4">Next.js PWA Counter</h1>
+
+      <div className="text-4xl font-bold mb-4">{count}</div>
+
+      <div className="flex gap-4">
+        <button
+          onClick={() => setCount(count + 1)}
+          className="px-4 py-2 bg-green-500 text-white rounded"
+        >
+          +
+        </button>
+        <button
+          onClick={() => setCount(count - 1)}
+          className="px-4 py-2 bg-red-500 text-white rounded"
+        >
+          -
+        </button>
+      </div>
+
       {!isInstalled && deferredPrompt && (
         <button
           onClick={installApp}
-          className="px-4 py-2 bg-blue-500 text-white rounded"
+          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
         >
           Install App
         </button>
       )}
-      {isInstalled && <p>App is installed ✅</p>}
+
+      {isInstalled && <p className="mt-4">App is installed ✅</p>}
     </main>
   );
+}
+
+// BeforeInstallPromptEvent интерфэйсийг тодорхойлох
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }

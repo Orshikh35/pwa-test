@@ -1,7 +1,10 @@
+
 export const metadata = {
-  title: "Counting App",
-  description: "A simple PWA counter app built with Next.js",
+  title: "Next.js PWA",
+  description: "A PWA example with Next.js",
+  manifest: "/manifest.json",
 };
+
 
 export default function RootLayout({
   children,
