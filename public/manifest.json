@@ -1,7 +1,7 @@
 {
-    "name": "Next.js PWA App",
-    "short_name": "NextPWA",
-    "description": "A PWA example with Next.js",
+    "name": "Миний PWA Апп",
+    "short_name": "PWA Апп",
+    "description": "Next.js дээр хийсэн PWA апп",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#ffffff",
@@ -10,13 +10,13 @@
       {
         "src": "/icons/icon-192x192.png",
         "sizes": "192x192",
-        "type": "image/png"
+        "type": "image/png",
+        "purpose": "any maskable"
       },
       {
-        "src": "/icons/icon-512x512.png",
+        "src": "/icons/icon-512x512.png", 
         "sizes": "512x512",
         "type": "image/png"
       }
     ]
   }
-  
