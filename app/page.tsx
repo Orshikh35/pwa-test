@@ -9,42 +9,25 @@ import Footer from "../components/Footer";
 export default function Home() {
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
-  const [cameraReady, setCameraReady] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Камерийг нээх функц
   const startCamera = async () => {
     try {
-      setCameraReady(false); // Камер ачаалагдаж дуустал бэлэн биш
-      
       // Камераас видео стрим авах
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { 
-          facingMode: "environment",  // Арын камерыг нээх
-          width: { ideal: 1280 },
-          height: { ideal: 720 }
-        }, 
+        video: { facingMode: "environment" }, // Арын камерыг нээх
         audio: false
       });
       
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        
-        // Видео ачаалагдаж бэлэн болсон үед
-        videoRef.current.onloadeddata = () => {
-          setCameraReady(true);
-          console.log("Камер бэлэн болсон");
+        videoRef.current.onloadedmetadata = () => {
+          videoRef.current?.play().catch(e => {
+            console.error("Видео тоглуулахад алдаа гарлаа:", e);
+          });
         };
-        
-        // Видеог тоглуулах
-        try {
-          await videoRef.current.play();
-        } catch (err) {
-          console.error("Видео тоглуулахад алдаа гарлаа:", err);
-        }
-        
         setIsCameraActive(true);
         setCapturedImage(null); // Шинээр камер нээхэд өмнөх зургийг арилгах
       }
@@ -62,58 +45,26 @@ export default function Home() {
       tracks.forEach(track => track.stop());
       videoRef.current.srcObject = null;
       setIsCameraActive(false);
-      setCameraReady(false);
     }
   };
 
   // Зураг авах функц
   const captureImage = () => {
-    // Камер бэлэн биш бол
-    if (!cameraReady) {
-      console.log("Камер бэлэн биш байна, түр хүлээнэ үү.");
-      return;
-    }
-    
     if (canvasRef.current && videoRef.current) {
-      try {
-        const context = canvasRef.current.getContext("2d");
-        if (context) {
-          // Видеоны өндөр өргөнийг авах
-          const width = videoRef.current.videoWidth || 640;
-          const height = videoRef.current.videoHeight || 480;
-          
-          canvasRef.current.width = width;
-          canvasRef.current.height = height;
-          
-          console.log(`Зураг авч байна: ${width}x${height}`);
-          
-          // Видеоны дүрсийг канвас руу зурах
-          context.drawImage(videoRef.current, 0, 0, width, height);
-          
-          // Canvas-г зураг болгон хадгалах
-          const imageData = canvasRef.current.toDataURL("image/jpeg", 0.8);
-          console.log("Зураг амжилттай авлаа");
-          
-          setCapturedImage(imageData);
-          stopCamera(); // Зураг авсны дараа камерыг хаах
-        }
-      } catch (error) {
-        console.error("Зураг авахад алдаа гарлаа:", error);
-        alert("Зураг авахад алдаа гарлаа. Дахин оролдоно уу.");
+      const context = canvasRef.current.getContext("2d");
+      if (context) {
+        // Видеоны өндөр өргөнийг авах
+        canvasRef.current.width = videoRef.current.videoWidth || 640;
+        canvasRef.current.height = videoRef.current.videoHeight || 480;
+        
+        // Видеоны дүрсийг канвас руу зурах
+        context.drawImage(videoRef.current, 0, 0);
+        
+        // Canvas-г зураг болгон хадгалах
+        const imageData = canvasRef.current.toDataURL("image/png");
+        setCapturedImage(imageData);
+        stopCamera(); // Зураг авсны дараа камерыг хаах
       }
-    }
-  };
-
-
-  // Утасны камераас авсан зургийг боловсруулах
-  const handleImageCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setCapturedImage(event.target?.result as string);
-      };
-      reader.readAsDataURL(file);
     }
   };
 
@@ -124,20 +75,26 @@ export default function Home() {
     };
   }, []);
 
-  // Камерын зөвшөөрлийг урьдчилан авах
-  useEffect(() => {
-    // Хуудас ачаалагдахад нэг удаа камерын зөвшөөрөл авах
-    navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-      .then(stream => {
-        // Зөвшөөрөл авсан бол стримийг хаах
-        const tracks = stream.getTracks();
-        tracks.forEach(track => track.stop());
-        console.log("Камерын зөвшөөрөл амжилттай авлаа");
-      })
-      .catch(err => {
-        console.error("Камерын зөвшөөрөл авахад алдаа гарлаа:", err);
-      });
-  }, []);
+  // Шинэ камер товчны функц - Camera app руу шилжих
+  const openNativeCamera = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.capture = 'environment'; // Энэ шинж чанар нь төхөөрөмжийн камер нээх
+    
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          setCapturedImage(event.target?.result as string);
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+    
+    input.click();
+  };
 
   return (
     <div className="h-screen w-screen flex flex-col justify-between bg-black">
@@ -150,7 +107,7 @@ export default function Home() {
             </div>
             <div
               className="rounded-full h-[50px] w-[50px] text-white bg-slate-300/10 flex items-center justify-center"
-              onClick={isCameraActive ? captureImage : startCamera} // Камераар авах аргыг ашиглах
+              onClick={openNativeCamera} // Камер-ийн товч дээр дарахад утасны апп нээж авна
             >
               <CiCamera className="w-[24px] h-[24px]" />
             </div>
@@ -163,7 +120,7 @@ export default function Home() {
         </div>
         
         <div className="w-full flex flex-col items-center justify-center mt-8">
-          {/* Web камерын харагдах хэсэг */}
+          {/* Web камерын харагдах хэсэг - Нэмэлт боломжоор */}
           {isCameraActive && (
             <div className="w-full max-w-md relative">
               <video 
@@ -176,10 +133,9 @@ export default function Home() {
               />
               <button 
                 onClick={captureImage} 
-                className={`absolute bottom-4 left-1/2 transform -translate-x-1/2 px-6 py-2 ${cameraReady ? 'bg-blue-500' : 'bg-gray-500'} text-white rounded-full`}
-                disabled={!cameraReady}
+                className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-6 py-2 bg-blue-500 text-white rounded-full"
               >
-                {cameraReady ? 'Зураг авах' : 'Ачааллаж байна...'}
+                Зураг авах
               </button>
               <button 
                 onClick={stopCamera} 
@@ -200,7 +156,7 @@ export default function Home() {
                 style={{ minHeight: '300px', objectFit: 'contain' }} 
               />
               <button 
-                onClick={startCamera} 
+                onClick={openNativeCamera} 
                 className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-6 py-2 bg-blue-500 text-white rounded-full"
               >
                 Дахин зураг авах
@@ -212,7 +168,7 @@ export default function Home() {
           {!isCameraActive && !capturedImage && (
             <div 
               className="w-full max-w-md h-64 bg-slate-300/10 rounded-[16px] border-[1px] border-gray-400/10 flex items-center justify-center cursor-pointer"
-              onClick={startCamera}
+              onClick={openNativeCamera}
             >
               <div className="text-center text-white">
                 <CiCamera className="w-16 h-16 mx-auto opacity-50" />
@@ -220,16 +176,6 @@ export default function Home() {
               </div>
             </div>
           )}
-          
-          {/* Утасны камер ашиглах боломж */}
-          <input
-            type="file"
-            ref={fileInputRef}
-            className="hidden"
-            accept="image/*"
-            capture="environment"
-            onChange={handleImageCapture}
-          />
           
           {/* Canvas элемент - зураг боловсруулахад ашиглана */}
           <canvas ref={canvasRef} className="hidden" />
