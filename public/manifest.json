@@ -1,11 +1,14 @@
+
 {
     "name": "Миний PWA Апп",
     "short_name": "PWA Апп",
     "description": "Next.js дээр хийсэн PWA апп",
     "start_url": "/",
+    "scope": "/",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#000000",
+    "orientation": "portrait",
     "icons": [
       {
         "src": "/icons/icon-192x192.png",
