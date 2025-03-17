@@ -131,7 +131,6 @@ export default function Home() {
             </div>
           )}
 
-          {/* Авсан зургийн харагдах хэсэг */}
           {capturedImage && !isCameraActive && (
             <div className="w-full max-w-md relative">
               <button
@@ -143,18 +142,22 @@ export default function Home() {
               <img
                 src={capturedImage}
                 alt="Авсан зураг"
-                className="w-full h-auto rounded-[16px] border-2 border-green-500"
+                className="w-full h-auto rounded-[16px] "
                 style={{ minHeight: "300px", objectFit: "contain" }}
               />
               <button
                 onClick={openNativeCamera}
-                className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-6 py-2 bg-gray-600/50 text-white rounded-full"
+                className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-6 py-2 bg-gray-300/50 text-white rounded-full"
               >
                 Дахин зураг авах
               </button>
             </div>
           )}
-
+          {capturedImage && !isCameraActive && (
+            <div onClick={handleCloseImage} className="px-8 rounded-md py-2 flex items-center justify-center bg-slate-300/10 border-[1px] border-slate-400/10 text-white mt-8">
+              Илгээх
+            </div>
+          )}
           {/* Камер идэвхгүй, зураг аваагүй үед харагдах хэсэг */}
           {!isCameraActive && !capturedImage && (
             <div
