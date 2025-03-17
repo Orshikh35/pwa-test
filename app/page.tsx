@@ -1,32 +1,40 @@
 "use client";
-import { useState } from "react";
 import "./globals.css";
-
+import { FaPlus } from "react-icons/fa6";
+import { VscSettings } from "react-icons/vsc";
+import Footer from "../components/Footer";
+import { CiSearch } from "react-icons/ci";
 export default function Home() {
-  const [count, setCount] = useState(0);
-
   return (
-    <div className="h-screen w-screen">
-      <main className="bg-gray-400 h-full w-full flex flex-col items-center justify-center">
-        <h1 className="text-white text-[30px]">Сайн байна уу!</h1>
-        <p>Энэ бол PWA апп юм.</p>
-
-        <div className="flex items-center gap-4 mt-4">
-          <button
-            className="bg-red-500 text-white px-4 py-2 rounded-lg"
-            onClick={() => setCount(count - 1)}
-          >
-            -
-          </button>
-          <span className="text-white text-2xl">{count}</span>
-          <button
-            className="bg-green-500 text-white px-4 py-2 rounded-lg"
-            onClick={() => setCount(count + 1)}
-          >
-            +
-          </button>
+    <div className="h-screen w-screen flex flex-col justify-between">
+      <main className="bg-[#0f0e12] h-full w-full px-4 py-4 flex flex-col">
+   
+        <div className="w-full flex items-center justify-between ">
+          <h1 className="text-white text-[34px] font-semibold">Workouts</h1>
+          <div className="flex items-center gap-4">
+            <div className="rounded-full h-[50px] w-[50px] text-white bg-slate-300/10 flex items-center justify-center">
+              <FaPlus />
+            </div>
+            <div className="rounded-full h-[50px] w-[50px] text-white bg-slate-300/10 flex items-center justify-center">
+              <VscSettings />
+            </div>
+          </div>
         </div>
+        <div className="w-full h-[50px] bg-slate-300/10 rounded-[16px] border-[1px] border-gray-400/10 mt-12 text-white flex items-center justify-between px-4 font-light">
+          <input type="text" className="bg-transparent w-[300px] outline-none " placeholder="Хайх...."/>
+          <CiSearch className="w-[28px] h-[28px]"/>
+        </div>
+        <div className="w-full flex items-center justify-between pt-6">
+          <div className="w-[190px] h-[200px] bg-slate-300/10 rounded-[16px] border-[1px] border-gray-400/10">
+          <div className="flex gap-1 items-center">
+          </div>
+          </div>
+          <div className="w-[190px] h-[200px] bg-slate-300/10 rounded-[16px] border-[1px] border-gray-400/10"></div>
+        </div>
+        <div className="w-full h-[200px] bg-slate-300/10 rounded-[16px] border-[1px] border-gray-400/10 mt-4"></div>
+        
       </main>
+      <Footer />
     </div>
   );
 }
