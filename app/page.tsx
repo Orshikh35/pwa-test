@@ -5,6 +5,7 @@ import { CiSearch } from "react-icons/ci";
 import { CiCamera } from "react-icons/ci";
 import { useRef, useState, useEffect } from "react";
 import Footer from "../components/Footer";
+import { IoIosClose } from "react-icons/io";
 
 export default function Home() {
   const [isCameraActive, setIsCameraActive] = useState(false);
@@ -17,7 +18,7 @@ export default function Home() {
     if (videoRef.current && videoRef.current.srcObject) {
       const stream = videoRef.current.srcObject as MediaStream;
       const tracks = stream.getTracks();
-      tracks.forEach(track => track.stop());
+      tracks.forEach((track) => track.stop());
       videoRef.current.srcObject = null;
       setIsCameraActive(false);
     }
@@ -31,10 +32,10 @@ export default function Home() {
         // Видеоны өндөр өргөнийг авах
         canvasRef.current.width = videoRef.current.videoWidth || 640;
         canvasRef.current.height = videoRef.current.videoHeight || 480;
-        
+
         // Видеоны дүрсийг канвас руу зурах
         context.drawImage(videoRef.current, 0, 0);
-        
+
         // Canvas-г зураг болгон хадгалах
         const imageData = canvasRef.current.toDataURL("image/png");
         setCapturedImage(imageData);
@@ -52,11 +53,11 @@ export default function Home() {
 
   // Шинэ камер товчны функц - Camera app руу шилжих
   const openNativeCamera = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.capture = 'environment'; // Энэ шинж чанар нь төхөөрөмжийн камер нээх
-    
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.capture = "environment"; // Энэ шинж чанар нь төхөөрөмжийн камер нээх
+
     input.onchange = (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
@@ -67,8 +68,13 @@ export default function Home() {
         reader.readAsDataURL(file);
       }
     };
-    
+
     input.click();
+  };
+
+  const handleCloseImage = () => {
+    setCapturedImage(null); // Clear the captured image
+    setIsCameraActive(false); // Optionally stop the camera
   };
 
   return (
@@ -88,60 +94,70 @@ export default function Home() {
             </div>
           </div>
         </div>
-        
+
         <div className="w-full h-[50px] bg-slate-300/10 rounded-[16px] border-[1px] border-gray-400/10 mt-12 text-white flex items-center justify-between px-4 font-light">
-          <input type="text" className="bg-transparent w-[300px] outline-none" placeholder="Хайх...." />
+          <input
+            type="text"
+            className="bg-transparent w-[300px] outline-none"
+            placeholder="Хайх...."
+          />
           <CiSearch className="w-[28px] h-[28px]" />
         </div>
-        
+
         <div className="w-full flex flex-col items-center justify-center mt-8">
           {/* Web камерын харагдах хэсэг - Нэмэлт боломжоор */}
           {isCameraActive && (
             <div className="w-full max-w-md relative">
-              <video 
-                ref={videoRef} 
-                autoPlay 
-                playsInline 
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
                 muted
-                className="w-full h-auto rounded-[16px] border-2 border-blue-500" 
-                style={{ minHeight: '300px', objectFit: 'cover' }}
+                className="w-full h-auto rounded-[16px] border-2 border-blue-500"
+                style={{ minHeight: "300px", objectFit: "cover" }}
               />
-              <button 
-                onClick={captureImage} 
+              <button
+                onClick={captureImage}
                 className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-6 py-2 bg-blue-500 text-white rounded-full"
               >
                 Зураг авах
               </button>
-              <button 
-                onClick={stopCamera} 
+              <button
+                onClick={stopCamera}
                 className="absolute top-4 right-4 px-4 py-1 bg-red-500 text-white rounded-full text-sm"
               >
                 Хаах
               </button>
             </div>
           )}
-          
+
           {/* Авсан зургийн харагдах хэсэг */}
           {capturedImage && !isCameraActive && (
             <div className="w-full max-w-md relative">
-              <img 
-                src={capturedImage} 
-                alt="Авсан зураг" 
+              <button
+              onClick={handleCloseImage}
+                className="absolute w-[40px] h-[40px] bg-slate-400/50  right-0 flex items-center justify-center mt-2 mr-3 text-white rounded-full"
+              >
+               <IoIosClose className="w-[28px] h-[28px]"/>
+              </button>
+              <img
+                src={capturedImage}
+                alt="Авсан зураг"
                 className="w-full h-auto rounded-[16px] border-2 border-green-500"
-                style={{ minHeight: '300px', objectFit: 'contain' }} 
+                style={{ minHeight: "300px", objectFit: "contain" }}
               />
-              <button 
-                onClick={openNativeCamera} 
-                className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-6 py-2 bg-blue-500 text-white rounded-full"
+              <button
+                onClick={openNativeCamera}
+                className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-6 py-2 bg-gray-600/50 text-white rounded-full"
               >
                 Дахин зураг авах
               </button>
             </div>
           )}
-          
+
           {/* Камер идэвхгүй, зураг аваагүй үед харагдах хэсэг */}
           {!isCameraActive && !capturedImage && (
-            <div 
+            <div
               className="w-full max-w-md h-64 bg-slate-300/10 rounded-[16px] border-[1px] border-gray-400/10 flex items-center justify-center cursor-pointer"
               onClick={openNativeCamera}
             >
@@ -151,7 +167,7 @@ export default function Home() {
               </div>
             </div>
           )}
-          
+
           {/* Canvas элемент - зураг боловсруулахад ашиглана */}
           <canvas ref={canvasRef} className="hidden" />
         </div>
