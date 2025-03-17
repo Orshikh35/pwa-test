@@ -7,16 +7,15 @@ import { CiSearch } from "react-icons/ci";
 export default function Home() {
   return (
     <div className="h-screen w-screen flex flex-col justify-between">
-      <main className="bg-[#0f0e12] h-full w-full px-4 py-4 flex flex-col">
-   
+      <main className=" h-full w-full px-4 flex flex-col">
         <div className="w-full flex items-center justify-between ">
           <h1 className="text-white text-[34px] font-semibold">Workouts</h1>
           <div className="flex items-center gap-4">
             <div className="rounded-full h-[50px] w-[50px] text-white bg-slate-300/10 flex items-center justify-center">
-              <FaPlus />
+              <FaPlus className="w-[24px] h-[24px]"/>
             </div>
             <div className="rounded-full h-[50px] w-[50px] text-white bg-slate-300/10 flex items-center justify-center">
-              <VscSettings />
+              <VscSettings className="w-[24px] h-[24px]"/>
             </div>
           </div>
         </div>

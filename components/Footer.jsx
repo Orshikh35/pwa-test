@@ -5,7 +5,7 @@ import { IoPersonOutline } from "react-icons/io5";
 
 function Footer() {
   return (
-    <div className="w-full h-[80px] border-t-[1px] border-t-gray-400/10 px-4 bg-[#0f0e12] flex items-center justify-around text-white">
+    <div className="w-full h-[80px] border-t-[1px] border-t-gray-400/10 px-4 bg-[#0f0e12] flex items-center justify-around text-white pb-3">
       <MdOutlineDashboard className="w-[24px] h-[24px]"/>
       <FaRegCalendar className="w-[24px] h-[24px]"/>
       <IoPersonOutline className="w-[24px] h-[24px]"/>
