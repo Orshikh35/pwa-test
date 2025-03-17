@@ -11,10 +11,11 @@ export default function Home() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
+  // Function to open the camera using getUserMedia
   const startCamera = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment" },
+        video: { facingMode: "environment" }, // This opens the rear camera on most devices
       });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
@@ -42,14 +43,14 @@ export default function Home() {
         canvasRef.current.height = videoRef.current.videoHeight;
         context.drawImage(videoRef.current, 0, 0);
         const imageData = canvasRef.current.toDataURL("image/png");
-        console.log("Captured image data:", imageData); // Handle the image as needed
+        console.log("Captured image data:", imageData);
       }
     }
   };
 
   return (
     <div className="h-screen w-screen flex flex-col justify-between">
-      <main className=" h-full w-full px-4 flex flex-col">
+      <main className="h-full w-full px-4 flex flex-col">
         <div className="w-full flex items-center justify-between ">
           <h1 className="text-white text-[34px] font-semibold">Workouts</h1>
           <div className="flex items-center gap-4">
