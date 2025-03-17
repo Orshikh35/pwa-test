@@ -12,31 +12,6 @@ export default function Home() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  // Камерийг нээх функц
-  const startCamera = async () => {
-    try {
-      // Камераас видео стрим авах
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment" }, // Арын камерыг нээх
-        audio: false
-      });
-      
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        videoRef.current.onloadedmetadata = () => {
-          videoRef.current?.play().catch(e => {
-            console.error("Видео тоглуулахад алдаа гарлаа:", e);
-          });
-        };
-        setIsCameraActive(true);
-        setCapturedImage(null); // Шинээр камер нээхэд өмнөх зургийг арилгах
-      }
-    } catch (error) {
-      console.error("Камер нээх боломжгүй байна", error);
-      alert("Камер нээх боломжгүй байна. Та камерын зөвшөөрлийг шалгана уу.");
-    }
-  };
-
   // Камерийг хаах функц
   const stopCamera = () => {
     if (videoRef.current && videoRef.current.srcObject) {
