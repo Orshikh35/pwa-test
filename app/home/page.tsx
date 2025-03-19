@@ -1,11 +1,11 @@
 "use client";
-import "./globals.css";
 import { FaPlus } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
 import { CiCamera } from "react-icons/ci";
 import { useRef, useState, useEffect } from "react";
-import Footer from "./Footer";
+import Footer from "@/components/Footer";
 import { IoIosClose } from "react-icons/io";
+import Image from "next/image";
 
 export default function Home() {
   const [isCameraActive, setIsCameraActive] = useState(false);
@@ -139,7 +139,7 @@ export default function Home() {
               >
                <IoIosClose className="w-[28px] h-[28px]"/>
               </button>
-              <img
+              <Image
                 src={capturedImage}
                 alt="Авсан зураг"
                 className="w-full h-auto rounded-[16px] "
