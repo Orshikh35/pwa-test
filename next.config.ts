@@ -6,5 +6,5 @@ const withPWA = require('next-pwa')({
 })
 
 module.exports = withPWA({
-  // Next.js тохиргоо
+  reactStrictMode: true,
 })

@@ -19,12 +19,11 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-export const messaging =
-  typeof window !== "undefined" ? getMessaging(app) : null;
-
+const app = typeof window !== "undefined" ? initializeApp(firebaseConfig) : null;
 
 export const generateToken = async () => {
+    if (typeof window === "undefined") return null;
+
   const permission = await Notification.requestPermission();
   console.log(permission);
   if (permission === "granted") {
@@ -35,3 +34,4 @@ export const generateToken = async () => {
     console.log(token);
   }
 };
+export const messaging = typeof window !== "undefined" ? getMessaging(app) : null;
