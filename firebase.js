@@ -1,13 +1,9 @@
-// Import the functions you need from the SDKs you need
+"use client";
+
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 import { getMessaging, getToken } from "firebase/messaging";
 
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// Firebase тохиргоо
 const firebaseConfig = {
   apiKey: "AIzaSyAHosCLOepj-Zqnn8Efi1DJJyVf3Go65_A",
   authDomain: "pushnotification-47047.firebaseapp.com",
@@ -18,20 +14,35 @@ const firebaseConfig = {
   measurementId: "G-24QLN2N2F9",
 };
 
-// Initialize Firebase
-const app = typeof window !== "undefined" ? initializeApp(firebaseConfig) : null;
+// Firebase эхлүүлэх (typeof window шалгалтыг зөв ашиглах)
+const app = (() => {
+  if (typeof window !== "undefined") {
+    return initializeApp(firebaseConfig);
+  }
+  return null;
+})();
+
+export const messaging = app ? getMessaging(app) : null;
 
 export const generateToken = async () => {
-    if (typeof window === "undefined") return null;
-
-  const permission = await Notification.requestPermission();
-  console.log(permission);
-  if (permission === "granted") {
-    const token = await getToken(messaging, {
-      vapidKey:
-        "BCKSzzi2ETIxusz-ChVtx1I1YwltYNun4nucAF2SuhkCVIdn9npH6A9-B7vvFK-s77GcBF217Dwqp0yYvOC8FDI",
-    });
-    console.log(token);
+  try {
+    if (!messaging) {
+      console.error("Messaging is not initialized.");
+      return;
+    }
+    
+    const permission = await Notification.requestPermission();
+    if (permission === "granted") {
+      const token = await getToken(messaging, {
+        vapidKey:
+          "BCKSzzi2ETIxusz-ChVtx1I1YwltYNun4nucAF2SuhkCVIdn9npH6A9-B7vvFK-s77GcBF217Dwqp0yYvOC8FDI",
+      });
+      console.log("Generated Token:", token);
+      return token;
+    } else {
+      console.warn("Notification permission denied");
+    }
+  } catch (error) {
+    console.error("Error generating token:", error);
   }
 };
-export const messaging = typeof window !== "undefined" ? getMessaging(app) : null;
