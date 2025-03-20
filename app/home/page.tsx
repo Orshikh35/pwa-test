@@ -5,7 +5,6 @@ import { CiCamera } from "react-icons/ci";
 import { useRef, useState, useEffect } from "react";
 import Footer from "@/components/Footer";
 import { IoIosClose } from "react-icons/io";
-import Image from "next/image";
 
 export default function Home() {
   const [isCameraActive, setIsCameraActive] = useState(false);
@@ -77,6 +76,38 @@ export default function Home() {
     setIsCameraActive(false); // Optionally stop the camera
   };
 
+  const handleSendImage = async () => {
+    if (!capturedImage) return;
+  
+    try {
+      console.log("assaasaasasasas");
+      
+      const blob = await fetch(capturedImage).then((res) => res.blob());
+      console.log(blob);
+      
+      const formData = new FormData();
+      formData.append("image", blob,"captured-image.png");
+      const response = await fetch("http://192.168.10.199:5000/upload", {
+        method: "POST",
+        body: formData,
+      });
+      if (!response.ok) {
+        throw new Error("Зураг илгээхэд алдаа гарлаа");
+      }
+  
+      const data = await response.json();
+      console.log(data);
+      
+      console.log(`Зураг амжилттай илгээгдлээ! File path: ${data.imagePath}`);
+      setCapturedImage(null);
+    } catch (error) {
+      console.error("Алдаа:", error);
+    }
+  };
+  
+  
+  
+
   return (
     <div className="h-screen w-screen flex flex-col justify-between bg-black">
       <main className="h-full w-full px-4 flex flex-col">
@@ -139,7 +170,7 @@ export default function Home() {
               >
                <IoIosClose className="w-[28px] h-[28px]"/>
               </button>
-              <Image
+              <img
                 src={capturedImage}
                 alt="Авсан зураг"
                 className="w-full h-auto rounded-[16px] "
@@ -154,7 +185,7 @@ export default function Home() {
             </div>
           )}
           {capturedImage && !isCameraActive && (
-            <div onClick={handleCloseImage} className="px-8 rounded-md py-2 flex items-center justify-center bg-slate-300/10 border-[1px] border-slate-400/10 text-white mt-8">
+            <div onClick={handleSendImage} className="px-8 rounded-md py-2 flex items-center justify-center bg-slate-300/10 border-[1px] border-slate-400/10 text-white mt-8">
               Илгээх
             </div>
           )}
