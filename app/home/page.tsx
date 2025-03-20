@@ -80,8 +80,6 @@ export default function Home() {
     if (!capturedImage) return;
   
     try {
-      console.log("assaasaasasasas");
-      
       const blob = await fetch(capturedImage).then((res) => res.blob());
       console.log(blob);
       
@@ -103,6 +101,8 @@ export default function Home() {
     } catch (error) {
       console.error("Алдаа:", error);
     }
+
+    handleCloseImage();
   };
   
   
@@ -185,9 +185,13 @@ export default function Home() {
             </div>
           )}
           {capturedImage && !isCameraActive && (
-            <div onClick={handleSendImage} className="px-8 rounded-md py-2 flex items-center justify-center bg-slate-300/10 border-[1px] border-slate-400/10 text-white mt-4">
-              Илгээх
-            </div>
+            <div
+            onClick={handleSendImage}
+            className="px-8 rounded-md py-2 flex items-center justify-center bg-slate-300/10 border-[1px] border-slate-400/10 text-white mt-4 cursor-pointer active:bg-blue-600"
+          >
+            Илгээх
+          </div>
+          
           )}
           {/* Камер идэвхгүй, зураг аваагүй үед харагдах хэсэг */}
           {!isCameraActive && !capturedImage && (
@@ -206,7 +210,8 @@ export default function Home() {
           <canvas ref={canvasRef} className="hidden" />
         </div>
       </main>
-      <Footer />
+      {/* <Footer /> */}
+      <p></p>
     </div>
   );
 }
