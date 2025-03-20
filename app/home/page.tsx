@@ -3,7 +3,6 @@ import { FaPlus } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
 import { CiCamera } from "react-icons/ci";
 import { useRef, useState, useEffect } from "react";
-import Footer from "@/components/Footer";
 import { IoIosClose } from "react-icons/io";
 
 export default function Home() {
