@@ -87,7 +87,7 @@ export default function Home() {
       
       const formData = new FormData();
       formData.append("image", blob,"captured-image.png");
-      const response = await fetch("http://192.168.10.199:5000/upload", {
+      const response = await fetch("http://192.168.0.153:5000/upload", {
         method: "POST",
         body: formData,
       });
@@ -185,7 +185,7 @@ export default function Home() {
             </div>
           )}
           {capturedImage && !isCameraActive && (
-            <div onClick={handleSendImage} className="px-8 rounded-md py-2 flex items-center justify-center bg-slate-300/10 border-[1px] border-slate-400/10 text-white mt-8">
+            <div onClick={handleSendImage} className="px-8 rounded-md py-2 flex items-center justify-center bg-slate-300/10 border-[1px] border-slate-400/10 text-white mt-4">
               Илгээх
             </div>
           )}
